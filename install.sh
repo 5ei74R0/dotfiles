@@ -8,27 +8,32 @@ function helpmsg() {
 
 function update_pkg_manager() {
     if command -v apt >/dev/null 2>&1; then
-        apt update
+        command apt update
     elif command -v brew >/dev/null 2>&1; then
-        brew update
+        command brew update
     else
-        echo "No supported package manager found. Please install apt or brew."
-        exit 1
+        command echo -e "\e[31m No supported package manager found. Please install apt or brew. \e[0m"
+        command exit 1
     fi
 }
 
 function install_zsh() {
     if [ ! -f /bin/zsh ]; then
-        apt install -y zsh
-        chsh -s $(which zsh)
-        echo "Zsh was set as default shell. \nPlease restart your terminal & run this script again."
-        exit 0
+        if command -v apt >/dev/null 2>&1; then
+            apt install -y zsh
+        elif command -v brew >/dev/null 2>&1; then
+            brew install zsh
+        fi
+        command chsh -s $(which zsh)
+        command echo -e "\e[32m Zsh was set as default shell. \e[0m"
+        command echo -e "\e[1;33m Please restart your terminal & run this script again. \e[0m"
+        command exit 0
     fi
 }
 
 function install_rust() {
     if ! command -v rustup >/dev/null 2>&1; then
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        command curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     fi
 }
 
@@ -45,16 +50,36 @@ function setup() {
     install_rust
 
     # Install sheldon
-    cargo install sheldon --locked
+    command cargo install sheldon --locked
 
 }
 
-function generate_symbolic_links() {
+function generate_links2home() {
+    local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
+    command echo "backup old dotfiles into $dotfiles_dir/.dotbackup"
+    if [ ! -d "$dotfiles_dir/.dotbackup" ]; then
+        command mkdir "$dotfiles_dir/.dotbackup"
+    fi
+    backup_dir="$dotfiles_dir/.dotbackup"
 
+    if [[ "$HOME" != "$dotfiles_dir" ]]; then
+        for f in $dotfiles_dir/.config/.??*; do
+            [[ `basename $f` == "__ignore__" ]] && continue
+            if [[ -L "$HOME/`basename $f`" ]]; then
+                command rm -f "$HOME/`basename $f`"
+            fi
+            if [[ -e "$HOME/`basename $f`" ]]; then
+                command mv "$HOME/`basename $f`" "$backup_dir"
+            fi
+            command ln -snf $f $HOME
+        done
+    else
+        command echo -e "\e[31m src == dest \e[0m"
+        command exit 1
+    fi
 }
 
 function main() {
-
 	while [ $# -gt 0 ]; do
 		case ${1} in
 			--debug | -d)
@@ -69,8 +94,8 @@ function main() {
 	done
 
     setup
-    generate_symbolic_links
-    echo "Castling completed."
+    generate_links2home
+    echo -e "\e[1;36m Castling completed. \e[m"
 }
 
 main "$@"
