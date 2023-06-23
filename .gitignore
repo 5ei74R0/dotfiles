@@ -2,8 +2,12 @@
 /.**
 
 !/.gitignore
+!/.github/
+!/.github/workflows/
+!/.github/workflows/**
 !/README.md
 !/LICENSE
+
 !/install.sh
 !/dotfile_mapping.txt
 !/.config/

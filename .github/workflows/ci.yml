@@ -1,0 +1,24 @@
+name: Test Installer
+
+on: [push]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: apt-get update && apt-get install -y git sudo
+    - name: Run installer
+      run: ./install.sh
+  
+  macos:
+    runs-on: macos-latest
+    container: mcr.microsoft.com/mssql/server:2019-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run installer
+      run: ./install.sh
