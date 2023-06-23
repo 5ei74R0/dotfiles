@@ -5,5 +5,9 @@
 !/README.md
 !/LICENSE
 !/install.sh
-!/.config
 !/dotfile_mapping.txt
+!/.config/
+!/.config/starship/
+!/.config/starship/**
+!/.config/zsh/
+!/.config/zsh/**

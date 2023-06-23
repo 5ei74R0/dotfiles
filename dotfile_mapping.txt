@@ -3,5 +3,9 @@
 # this information must be denoted as follows
 # .config/A/config.yml B/cfg.yml
 
-# src                           dst
+# src (dotfiles/)               dst ($HOME/)
 .config/starship/starship.toml  .config/starship.toml
+.config/zsh/plugins.toml        .config/sheldon/plugins.toml
+.config/zsh/.zshrc              .zshrc
+.config/zsh/.zshenv             .zshenv
+.config/zsh/.zprofile           .zprofile

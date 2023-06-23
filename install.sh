@@ -20,9 +20,9 @@ function update_pkg_manager() {
 function install_zsh() {
     if [ ! -f /bin/zsh ]; then
         if command -v apt >/dev/null 2>&1; then
-            apt install -y zsh
+            command apt install -y zsh
         elif command -v brew >/dev/null 2>&1; then
-            brew install zsh
+            command brew install zsh
         fi
         command chsh -s $(which zsh)
         command echo -e "\e[32m Zsh was set as default shell. \e[0m"
@@ -33,8 +33,41 @@ function install_zsh() {
 
 function install_rust() {
     if ! command -v rustup >/dev/null 2>&1; then
-        command curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        command curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     fi
+}
+
+function install_wget() {
+    if ! command -v wget >/dev/null 2>&1; then
+        if command -v apt >/dev/null 2>&1; then
+            command apt install -y wget
+        elif command -v brew >/dev/null 2>&1; then
+            command brew install wget
+        fi
+    fi
+}
+
+function install_zip() {
+    if ! command -v zip >/dev/null 2>&1; then
+        if command -v apt >/dev/null 2>&1; then
+            command apt install -y zip
+        elif command -v brew >/dev/null 2>&1; then
+            command brew install zip
+        fi
+    fi
+}
+
+function install_fonts() {
+    local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
+    command mkdir -p "$HOME/.fonts"
+    command mkdir -p "$dotfiles_dir/.tmp_fonts"
+    command cd "$dotfiles_dir/.tmp_fonts"
+    command wget "https://github.com/yuru7/udev-gothic/releases/download/v1.3.0/UDEVGothic_NF_v1.3.0.zip"
+    command unzip UDEVGothic_NF_v1.3.0
+    command mv UDEVGothic_NF_v1.3.0/*.ttf ./$HOME/.fonts
+    command cd "$dotfiles_dir"
+    command rm -rf "$dotfiles_dir/.tmp_fonts"
+    command fc-cache -fv
 }
 
 function setup() {
@@ -49,9 +82,20 @@ function setup() {
     # Install rustup, cargo, and rustc
     install_rust
 
-    # Install sheldon
-    command cargo install sheldon --locked
+    # Install wget
+    install_wget
 
+    # Install zip
+    install_zip
+
+    # Install fonts
+    install_fonts
+
+    # Install starship
+    curl -sS https://starship.rs/install.sh | sh
+
+    # Install sheldon
+    command cargo install --locked sheldon
 }
 
 function generate_links2home() {
