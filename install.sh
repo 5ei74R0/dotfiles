@@ -88,8 +88,14 @@ function install_fonts() {
 function install_starship() {
     if ! command -v starship >/dev/null 2>&1; then
         curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh -s -- -y
-        # curl -sS https://starship.rs/install.sh | sh
         echo -e "\e[36mInstalled starship\e[m\n"
+    fi
+}
+
+function install_rtx() {
+    if ! command -v rtx >/dev/null 2>&1; then
+        cargo install rtx
+        echo -e "\e[36mInstalled rtx\e[m\n"
     fi
 }
 
@@ -123,6 +129,9 @@ function setup() {
 
     # Install starship
     install_starship
+
+    # Install rtx
+    install_rtx
 
     # Install sheldon
     install_sheldon
@@ -194,6 +203,7 @@ function main() {
     setup
     generate_links2home
     echo -e "\n\e[1;36mCastling completed😎\e[m\n"
+    exit 0
 }
 
 main "$@"
