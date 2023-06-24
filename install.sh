@@ -18,6 +18,12 @@ function check_pkg_manager() {
     fi
 }
 
+function install_build_essential() {
+    if command -v apt >/dev/null 2>&1; then
+        apt install -y build-essential
+    fi
+}
+
 function install_curl() {
     if ! command -v curl >/dev/null 2>&1; then
         if command -v apt >/dev/null 2>&1; then
@@ -88,7 +94,7 @@ function install_starship() {
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install --locked sheldon
-        sheldon init
+        sheldon init -y
         echo -e "\e[36mInstalled sheldon\e[m\n"
     fi
 }
@@ -98,6 +104,9 @@ function setup() {
 
     # Update package manager
     check_pkg_manager
+
+    # build-essential
+    install_build_essential
 
     # Install  curl
     install_curl
