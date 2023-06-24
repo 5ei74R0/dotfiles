@@ -62,13 +62,13 @@ function install_jq() {
 }
 
 function install_fonts() {
-    if [[ -z $HOME/.fonts/UDEVGothic35NFLG-Regular.ttf ]]; then
+    if [[ ! -e "$HOME/.fonts/UDEVGothic35NFLG-Regular.ttf" ]]; then
         local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
         mkdir -p $HOME/.fonts
         mkdir -p $dotfiles_dir/.tmp_fonts
         cd $dotfiles_dir/.tmp_fonts
-        curl "https://github.com/yuru7/udev-gothic/releases/download/v1.3.0/UDEVGothic_NF_v1.3.0.zip"
-        unzip UDEVGothic_NF_v1.3.0
+        curl -LO "https://github.com/yuru7/udev-gothic/releases/download/v1.3.0/UDEVGothic_NF_v1.3.0.zip"
+        unzip UDEVGothic_NF_v1.3.0.zip
         mv UDEVGothic_NF_v1.3.0/*.ttf $HOME/.fonts/
         cd $dotfiles_dir
         rm -rf $dotfiles_dir/.tmp_fonts
