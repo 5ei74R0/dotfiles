@@ -145,7 +145,7 @@ function generate_links2home() {
     while read src2dst; do
         link_src=$(echo "${src2dst}" | jq -r '.src')
         link_dst=$(echo "${src2dst}" | jq -r '.dst')
-        echo -e "\e[36m try to generate symbolic link: \n  $link_src -> $link_dst \e[m\n"
+        echo -e "\e[36mTry to generate symbolic link: \n  $link_src -> $link_dst \e[m\n"
 
         if [[ -z "$link_src" || -z "$link_dst" ]]; then
             continue
