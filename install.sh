@@ -106,6 +106,48 @@ function install_sheldon() {
     fi
 }
 
+function install_extra_rust_tools() {
+    if ! command -v bat >/dev/null 2>&1; then
+        cargo install bat
+        echo -e "\e[36mInstalled bat\e[m\n"
+    fi
+    if ! command -v exa >/dev/null 2>&1; then
+        cargo install exa
+        echo -e "\e[36mInstalled exa\e[m\n"
+    fi
+    if ! command -v fd >/dev/null 2>&1; then
+        cargo install fd-find
+        echo -e "\e[36mInstalled fd\e[m\n"
+    fi
+    if ! command -v rg >/dev/null 2>&1; then
+        cargo install ripgrep
+        echo -e "\e[36mInstalled rg\e[m\n"
+    fi
+    if ! command -v dust >/dev/null 2>&1; then
+        cargo install du-dust
+        echo -e "\e[36mInstalled dust\e[m\n"
+    fi
+}
+
+function install_runtimes_via_rtx() {
+    # Node.js
+    if [ ! "$(rtx ls | rg node)" ]; then
+        rtx install node@19.3.0
+        rtx global node@19.3.0
+    fi
+
+    # Python
+    if [ ! "$(rtx ls | rg python)" ]; then
+        rtx install python@3.8.10
+        rtx global python@3.8.10
+    fi
+}
+
+function install_gitmoji() {
+    if ! command -v gitmoji >/dev/null 2>&1; then
+    npm i -g gitmoji-cli
+}
+
 function setup() {
     local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
 
@@ -186,6 +228,17 @@ function generate_links2home() {
     done
 }
 
+function extra_setup() {
+    # Install bat exa fd rg...
+    install_extra_rust_tools
+
+    # Install node python...
+    install_runtimes_via_rtx
+
+    # Install gitmoji
+    install_gitmoji
+}
+
 function main() {
 	while [ $# -gt 0 ]; do
 		case ${1} in
@@ -196,6 +249,30 @@ function main() {
 				helpmsg
 				exit 1
 				;;
+            --link | -l)
+                echo -e "\n\e[36mSetup [skipped]\e[m\n"
+                generate_links2home
+                echo -e "\n\e[36mLinks [ok]\e[m\n"
+                exit 0
+                ;;
+            --all | -a)
+                setup
+                echo -e "\n\e[36mSetup [ok]\e[m\n"
+                generate_links2home
+                echo -e "\n\e[36mLinks [ok]\e[m\n"
+                echo -e "\n\e[1;36mCastling completed😎\e[m\n"
+                exit 0
+                ;;
+            --extra | -e)
+                setup
+                echo -e "\n\e[36mSetup [ok]\e[m\n"
+                generate_links2home
+                echo -e "\n\e[36mLinks [ok]\e[m\n"
+                extra_setup
+                echo -e "\n\e[36mExtra [ok]\e[m\n"
+                echo -e "\n\e[1;36mCastling completed😎\e[m\n"
+                exit 0
+                ;;
 		esac
 		shift
 	done
