@@ -99,13 +99,6 @@ function install_sheldon() {
     fi
 }
 
-function install_rtx_cli() {
-    if ! command -v rtx >/dev/null 2>&1; then
-        cargo install rtx-cli
-        echo -e "\e[36mInstalled rtx-cli\e[m\n"
-    fi
-}
-
 function install_extra_rust_tools() {
     if ! command -v bat >/dev/null 2>&1; then
         cargo install bat
@@ -129,7 +122,16 @@ function install_extra_rust_tools() {
     fi
 }
 
+function install_rtx_cli() {
+    if ! command -v rtx >/dev/null 2>&1; then
+        cargo install rtx-cli
+        echo -e "\e[36mInstalled rtx-cli\e[m\n"
+    fi
+}
+
 function install_runtimes_via_rtx() {
+    eval "$(rtx activate zsh)"
+
     # Node.js
     if [ ! "$(rtx ls | rg node)" ]; then
         rtx install node@19.3.0
