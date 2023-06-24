@@ -10,7 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: NONINTERACTIVE=1 apt update && apt install -y git libssl-dev build-essential
+      run: DEBIAN_FRONTEND=noninteractive apt update && apt install -y git libssl-dev pkg-config build-essential
     - name: export openssl
       run: export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu && export OPENSSL_INCLUDE_DIR=/usr/include/openssl
     - name: Install zsh
