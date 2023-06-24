@@ -88,7 +88,7 @@ function install_starship() {
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install sheldon
-        sheldon init -y
+        sheldon init --shell zsh
         echo -e "\e[36mInstalled sheldon\e[m\n"
     fi
 }
