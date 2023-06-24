@@ -10,11 +10,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Install dependencies
-      shell: zsh {0}
       run: apt-get update && apt-get install -y git sudo
-    - name: Run installer
       shell: zsh {0}
+    - name: Run installer
       run: sudo ./install.sh
+      shell: zsh {0}
+
   
   macos:
     runs-on: macos-latest
@@ -22,5 +23,5 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Run installer
-      shell: zsh {0}
       run: ./install.sh
+      shell: zsh {0}
