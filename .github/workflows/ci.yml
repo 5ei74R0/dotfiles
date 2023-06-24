@@ -10,7 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: apt update && apt install -y git
+      run: apt update && apt install -y git build-essential
     - name: Install zsh
       run: apt install --no-install-recommends -y zsh
     - name: Run installer
