@@ -9,14 +9,23 @@ function helpmsg() {
 
 function check_pkg_manager() {
     if command -v apt >/dev/null 2>&1; then
-        apt --version
-        echo -e "\e[36mVerified package manager: apt\e[m\n"
+        echo -e "\e[36mVerified package manager: $(apt --version)\e[m\n"
     elif command -v brew >/dev/null 2>&1; then
-        brew --version
-        echo -e "\e[36mVerified package manager: homebrew\e[m\n"
+        echo -e "\e[36mVerified package manager: $(brew --version)\e[m\n"
     else
         echo -e "\e[31m No supported package manager found. Please install apt or brew. \e[0m"
         exit 1
+    fi
+}
+
+function install_curl() {
+    if ! command -v curl >/dev/null 2>&1; then
+        if command -v apt >/dev/null 2>&1; then
+            apt install -y curl
+        elif command -v brew >/dev/null 2>&1; then
+            brew install curl
+        fi
+        echo -e "\e[36mInstalled curl\e[m\n"
     fi
 }
 
@@ -26,17 +35,6 @@ function install_rust() {
         rustup self update
         rustup update
         echo -e "\e[36mInstalled rustup, rustc, cargo\e[m\n"
-    fi
-}
-
-function install_wget() {
-    if ! command -v wget >/dev/null 2>&1; then
-        if command -v apt >/dev/null 2>&1; then
-            apt install -y wget
-        elif command -v brew >/dev/null 2>&1; then
-            brew install wget
-        fi
-        echo -e "\e[36mInstalled wget\e[m\n"
     fi
 }
 
@@ -68,7 +66,7 @@ function install_fonts() {
         mkdir -p $HOME/.fonts
         mkdir -p $dotfiles_dir/.tmp_fonts
         cd $dotfiles_dir/.tmp_fonts
-        wget "https://github.com/yuru7/udev-gothic/releases/download/v1.3.0/UDEVGothic_NF_v1.3.0.zip"
+        curl "https://github.com/yuru7/udev-gothic/releases/download/v1.3.0/UDEVGothic_NF_v1.3.0.zip"
         unzip UDEVGothic_NF_v1.3.0
         mv UDEVGothic_NF_v1.3.0/*.ttf $HOME/.fonts/
         cd $dotfiles_dir
@@ -99,11 +97,11 @@ function setup() {
     # Update package manager
     check_pkg_manager
 
+    # Install  curl
+    install_curl
+
     # Install rustup, cargo, and rustc
     install_rust
-
-    # Install wget
-    install_wget
 
     # Install zip
     install_zip
