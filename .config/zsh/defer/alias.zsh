@@ -12,3 +12,5 @@ if [[ $(command -v exa) ]]; then
   alias eta='exa -T -a -I "node_modules|.git|.cache" --color=always --icons | less -r'
   alias lta=eta
 fi
+
+alias codei='code-insiders'  # VS Code Insiders
