@@ -9,7 +9,7 @@
 !/LICENSE
 
 !/install.sh
-!/dotfile_mapping.txt
+!/link_mapper.json
 !/.config/
 !/.config/starship/
 !/.config/starship/**
