@@ -88,7 +88,6 @@ function install_starship() {
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install sheldon
-        sheldon init --shell zsh
         echo -e "\e[36mInstalled sheldon\e[m\n"
     fi
 }
@@ -149,6 +148,11 @@ function generate_links2home() {
 
         if [[ -z "$link_src" || -z "$link_dst" ]]; then
             continue
+        fi
+
+        # Check directory
+        if [[ ! -d "$HOME/$(dirname "$link_dst")" ]]; then
+            mkdir -p "$HOME/$(dirname "$link_dst")"
         fi
 
         # Remove old links
