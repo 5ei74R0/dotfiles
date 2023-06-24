@@ -24,9 +24,8 @@ jobs:
     - name: Install zsh
       run: apt install --no-install-recommends -y zsh
     - name: Run installer
-      run: zsh ./install.sh
+      run: zsh ./install.sh -e
 
-  
   macos:
     runs-on: macos-latest
     steps:
@@ -35,4 +34,4 @@ jobs:
     - name: Install homebrew
       run: NONINTERACTIVE=1 /bin/bash -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     - name: Run installer
-      run: zsh ./install.sh
+      run: zsh ./install.sh --extra

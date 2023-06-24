@@ -92,17 +92,17 @@ function install_starship() {
     fi
 }
 
-function install_rtx_cli() {
-    if ! command -v rtx >/dev/null 2>&1; then
-        cargo install rtx-cli
-        echo -e "\e[36mInstalled rtx-cli\e[m\n"
-    fi
-}
-
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install sheldon
         echo -e "\e[36mInstalled sheldon\e[m\n"
+    fi
+}
+
+function install_rtx_cli() {
+    if ! command -v rtx >/dev/null 2>&1; then
+        cargo install rtx-cli
+        echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
 }
 
@@ -173,9 +173,6 @@ function setup() {
     # Install starship
     install_starship
 
-    # Install rtx
-    install_rtx_cli
-
     # Install sheldon
     install_sheldon
 }
@@ -233,6 +230,9 @@ function extra_setup() {
     # Install bat exa fd rg...
     install_extra_rust_tools
 
+    # Install rtx-cli
+    install_rtx_cli
+
     # Install node python...
     install_runtimes_via_rtx
 
@@ -279,7 +279,9 @@ function main() {
 	done
 
     setup
+    echo -e "\n\e[36mSetup [ok]\e[m\n"
     generate_links2home
+    echo -e "\n\e[36mLinks [ok]\e[m\n"
     echo -e "\n\e[1;36mCastling completed😎\e[m\n"
     exit 0
 }
