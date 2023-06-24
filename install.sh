@@ -145,7 +145,8 @@ function install_runtimes_via_rtx() {
 
 function install_gitmoji() {
     if ! command -v gitmoji >/dev/null 2>&1; then
-    npm i -g gitmoji-cli
+        npm i -g gitmoji-cli
+    fi
 }
 
 function setup() {
