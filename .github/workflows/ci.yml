@@ -5,12 +5,11 @@ on: [push]
 jobs:
   ubuntu:
     runs-on: ubuntu-20.04
-    container: ubuntu:20.04
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: apt update && apt install -y git libssl-dev pkg-config build-essential
+      run: NONINTERACTIVE=1 apt update && apt install -y git libssl-dev pkg-config build-essential
     - name: Install zsh
       run: apt install --no-install-recommends -y zsh
     - name: Run installer
