@@ -8,10 +8,10 @@ function helpmsg() {
 }
 
 function check_pkg_manager() {
-    if command -v apt >/dev/null 2>&1; then
-        echo -e "\e[36mVerified package manager: $(apt --version)\e[m\n"
-    elif command -v brew >/dev/null 2>&1; then
+    if command -v brew >/dev/null 2>&1; then
         echo -e "\e[36mVerified package manager: $(brew --version)\e[m\n"
+    elif command -v apt >/dev/null 2>&1; then
+        echo -e "\e[36mVerified package manager: $(apt --version)\e[m\n"
     else
         echo -e "\e[31m No supported package manager found. Please install apt or brew. \e[0m"
         exit 1
@@ -26,10 +26,10 @@ function install_build_essential() {
 
 function install_curl() {
     if ! command -v curl >/dev/null 2>&1; then
-        if command -v apt >/dev/null 2>&1; then
-            apt install -y curl
-        elif command -v brew >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
             brew install curl
+        elif command -v apt >/dev/null 2>&1; then
+            apt install -y curl
         fi
         echo -e "\e[36mInstalled curl\e[m\n"
     fi
@@ -47,10 +47,10 @@ function install_rust() {
 
 function install_zip() {
     if ! command -v zip >/dev/null 2>&1; then
-        if command -v apt >/dev/null 2>&1; then
-            apt install -y zip
-        elif command -v brew >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
             brew install zip
+        elif command -v apt >/dev/null 2>&1; then
+            apt install -y zip
         fi
         echo -e "\e[36mInstalled zip\e[m\n"
     fi
@@ -58,10 +58,10 @@ function install_zip() {
 
 function install_jq() {
     if ! command -v jq >/dev/null 2>&1; then
-        if command -v apt >/dev/null 2>&1; then
-            apt install -y jq
-        elif command -v brew >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
             brew install jq
+        elif command -v apt >/dev/null 2>&1; then
+            apt install -y jq
         fi
         echo -e "\e[36mInstalled jquery\e[m\n"
     fi
@@ -93,6 +93,14 @@ function install_starship() {
 
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
+        # openssl is required for cargo install sheldon ?
+        if ! command -v openssl >/dev/null 2>&1; then
+            if command -v brew >/dev/null 2>&1; then
+                brew install openssl
+            elif command -v apt >/dev/null 2>&1; then
+                apt install -y openssl
+            fi
+        fi
         cargo install --locked sheldon
         sheldon init -y
         echo -e "\e[36mInstalled sheldon\e[m\n"
