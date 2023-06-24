@@ -62,6 +62,14 @@ function install_jq() {
 }
 
 function install_fonts() {
+    if ! command -v fc-cache >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
+            brew install fontconfig
+        elif command -v apt >/dev/null 2>&1; then
+            apt install -y fontconfig
+        fi
+        echo -e "\e[36mInstalled fontconfig\e[m\n"
+    fi
     if [[ ! -e "$HOME/.fonts/UDEVGothic35NFLG-Regular.ttf" ]]; then
         local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
         mkdir -p $HOME/.fonts
