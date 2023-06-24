@@ -1,0 +1,24 @@
+{
+    "src2dst": [
+        {
+            "src": ".config/starship/starship.toml",
+            "dst": ".config/starship.toml"
+        },
+        {
+            "src": ".config/zsh/plugins.toml",
+            "dst": ".config/sheldon/plugins.toml"
+        },
+        {
+            "src": ".config/zsh/.zshrc",
+            "dst": ".zshrc"
+        },
+        {
+            "src": ".config/zsh/.zshenv",
+            "dst": ".zshenv"
+        },
+        {
+            "src": ".config/zsh/.zprofile",
+            "dst": ".zprofile"
+        }
+    ]
+}
