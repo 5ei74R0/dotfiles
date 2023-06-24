@@ -1,4 +1,4 @@
-dotfiles_dir="$(pwd)/dotfiles"
+dotfiles_dir=~/dotfiles
 
 if test -n "$(git -C ${dotfiles_dir} status --porcelain)" ||
    ! git -C ${dotfiles_dir} diff --exit-code --stat --cached origin/main > /dev/null ; then
