@@ -10,25 +10,13 @@ function helpmsg() {
 function check_pkg_manager() {
     if command -v apt >/dev/null 2>&1; then
         apt --version
+        echo -e "\e[36mVerified package manager: apt\e[m\n"
     elif command -v brew >/dev/null 2>&1; then
         brew --version
+        echo -e "\e[36mVerified package manager: homebrew\e[m\n"
     else
         echo -e "\e[31m No supported package manager found. Please install apt or brew. \e[0m"
         exit 1
-    fi
-}
-
-function install_zsh() {
-    if [ ! -f /bin/zsh ]; then
-        if command -v apt >/dev/null 2>&1; then
-            apt install -y zsh
-        elif command -v brew >/dev/null 2>&1; then
-            brew install zsh
-        fi
-        chsh -s $(which zsh)
-        echo -e "\e[32m Zsh was set as default shell. \e[0m"
-        echo -e "\e[1;33m Please restart your terminal & run this script again. \e[0m"
-        exit 0
     fi
 }
 
@@ -37,6 +25,7 @@ function install_rust() {
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         rustup self update
         rustup update
+        echo -e "\e[36mInstalled rustup, rustc, cargo\e[m\n"
     fi
 }
 
@@ -47,6 +36,7 @@ function install_wget() {
         elif command -v brew >/dev/null 2>&1; then
             brew install wget
         fi
+        echo -e "\e[36mInstalled wget\e[m\n"
     fi
 }
 
@@ -57,6 +47,7 @@ function install_zip() {
         elif command -v brew >/dev/null 2>&1; then
             brew install zip
         fi
+        echo -e "\e[36mInstalled zip\e[m\n"
     fi
 }
 
@@ -67,6 +58,7 @@ function install_jq() {
         elif command -v brew >/dev/null 2>&1; then
             brew install jq
         fi
+        echo -e "\e[36mInstalled jquery\e[m\n"
     fi
 }
 
@@ -82,6 +74,7 @@ function install_fonts() {
         cd $dotfiles_dir
         rm -rf $dotfiles_dir/.tmp_fonts
         fc-cache -fv
+        echo -e "\e[36mInstalled a font-family, UDEVGothic\e[m\n"
     fi
 }
 
@@ -89,12 +82,14 @@ function install_starship() {
     if ! command -v starship >/dev/null 2>&1; then
         curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh -s -- -y
         # curl -sS https://starship.rs/install.sh | sh
+        echo -e "\e[36mInstalled starship\e[m\n"
     fi
 }
 
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install --locked sheldon
+        echo -e "\e[36mInstalled sheldon\e[m\n"
     fi
 }
 
@@ -103,9 +98,6 @@ function setup() {
 
     # Update package manager
     check_pkg_manager
-
-    # If zsh is not installed, install it
-    install_zsh
 
     # Install rustup, cargo, and rustc
     install_rust
@@ -151,9 +143,9 @@ function generate_links2home() {
 
     jq -c '.src2dst[]' < $dotfile_mapping |
     while read src2dst; do
-        echo "${src2dst}"
         link_src=$(echo "${src2dst}" | jq -r '.src')
         link_dst=$(echo "${src2dst}" | jq -r '.dst')
+        echo -e "\e[36m try to generate symbolic link: \n  $link_src -> $link_dst \e[m\n"
 
         if [[ -z "$link_src" || -z "$link_dst" ]]; then
             continue
@@ -189,7 +181,7 @@ function main() {
 
     setup
     generate_links2home
-    echo -e "\e[1;36mCastling completed😎\e[m"
+    echo -e "\n\e[1;36mCastling completed😎\e[m\n"
 }
 
 main "$@"
