@@ -92,10 +92,10 @@ function install_starship() {
     fi
 }
 
-function install_rtx() {
+function install_rtx_cli() {
     if ! command -v rtx >/dev/null 2>&1; then
-        cargo install rtx
-        echo -e "\e[36mInstalled rtx\e[m\n"
+        cargo install rtx-cli
+        echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
 }
 
@@ -174,7 +174,7 @@ function setup() {
     install_starship
 
     # Install rtx
-    install_rtx
+    install_rtx_cli
 
     # Install sheldon
     install_sheldon
