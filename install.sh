@@ -32,6 +32,7 @@ function install_curl() {
 function install_rust() {
     if ! command -v rustup >/dev/null 2>&1; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        source "$HOME/.cargo/env"
         rustup self update
         rustup update
         echo -e "\e[36mInstalled rustup, rustc, cargo\e[m\n"
@@ -87,6 +88,7 @@ function install_starship() {
 function install_sheldon() {
     if ! command -v sheldon >/dev/null 2>&1; then
         cargo install --locked sheldon
+        sheldon init
         echo -e "\e[36mInstalled sheldon\e[m\n"
     fi
 }
