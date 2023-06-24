@@ -6,7 +6,7 @@ Quick castling by running `install.sh`
 If your default shell is not zsh, please install zsh first.
 1. Install via apt,
     ```sh
-    apt install -y zsh
+    apt install --no-install-recommends -y zsh
     ```
     or via brew
     ```sh
