@@ -13,7 +13,7 @@
 shell = "zsh"
 
 [templates]
-defer = { value = 'zsh-defer source "{{ file }}"', each = true }
+defer = "{{ hooks | get: \"pre\" | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks | get: \"post\" | nl }}"
 
 [plugins.zsh-defer]
 github = 'romkatv/zsh-defer'
@@ -32,15 +32,14 @@ github = 'zsh-users/zsh-syntax-highlighting'
 apply = ['defer']
 
 [plugins.dotfiles-sync]
-local = './zsh/sync'
+local = '~/dotfiles/.config/zsh/sync'
 use = ['*.zsh']
 apply = ['source']
 
 [plugins.dotfiles-defer]
-local = './zsh/defer'
+local = '~/dotfiles/.config/zsh/defer'
 use = ['*.zsh']
 apply = ['defer']
 
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
-apply = ['defer']
