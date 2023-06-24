@@ -3,7 +3,9 @@
 set -ue
 
 function helpmsg() {
-    echo "Usage: $0 [--help | -h | -H]" 0>&2
+    # echo "Usage: $0 [--help | -h | -H]" 0>&2
+    echo "See README.md ↓"
+    echo -e "\e[36mhttps://github.com/5ei74R0/dotfiles\e[m"
     echo ""
 }
 
@@ -256,14 +258,6 @@ function main() {
                 echo -e "\n\e[36mSetup [skipped]\e[m\n"
                 generate_links2home
                 echo -e "\n\e[36mLinks [ok]\e[m\n"
-                exit 0
-                ;;
-            --all | -a)
-                setup
-                echo -e "\n\e[36mSetup [ok]\e[m\n"
-                generate_links2home
-                echo -e "\n\e[36mLinks [ok]\e[m\n"
-                echo -e "\n\e[1;36mCastling completed😎\e[m\n"
                 exit 0
                 ;;
             --extra | -e)
