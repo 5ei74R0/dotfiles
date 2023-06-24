@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Install dependencies
       run: apt update && \
-        echo "2\n" | (apt install -y pkg-config) \
+        echo "2\n" | (apt install -y pkg-config) && \
         apt install -y libssl-dev build-essential
     # - name: export openssl
     #   # run: export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu && export OPENSSL_INCLUDE_DIR=/usr/include/openssl
