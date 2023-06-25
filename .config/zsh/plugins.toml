@@ -41,6 +41,16 @@ local = '~/dotfiles/.config/zsh/defer'
 use = ['*.zsh']
 apply = ['defer']
 
+[plugins.dotfiles-local]
+local = '~/dotfiles/.config/zsh/local'
+use = ['*.zsh']
+apply = ['source']
+
+[plugins.dotfiles-local-defer]
+local = '~/dotfiles/.config/zsh/local'
+use = ['*.zsh.defer']
+apply = ['defer']
+
 [plugins.rtx]
 inline = 'eval "$(rtx activate zsh)"'
 

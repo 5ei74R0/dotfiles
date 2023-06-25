@@ -10,8 +10,10 @@
 
 !/install.sh
 !/link_mapper.json
+
 !/.config/
 !/.config/starship/
 !/.config/starship/**
 !/.config/zsh/
 !/.config/zsh/**
+/.config/zsh/local/**
