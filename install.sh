@@ -132,24 +132,25 @@ function install_rtx_cli() {
 }
 
 function install_runtimes_via_rtx() {
-    eval "$(rtx activate zsh)"
-
     # Node.js
     if [ ! "$(rtx ls | rg node)" ]; then
-        rtx install node@19.3.0
-        rtx global node@19.3.0
+        rtx install node@18.16.1  # lts
+        rtx global node@18.16.1  # lts
+        echo -e "\e[36mInstalled node via rtx-cli\e[m\n"
     fi
 
     # Python
     if [ ! "$(rtx ls | rg python)" ]; then
         rtx install python@3.8.10
         rtx global python@3.8.10
+        echo -e "\e[36mInstalled python via rtx-cli\e[m\n"
     fi
 }
 
 function install_gitmoji() {
     if ! command -v gitmoji >/dev/null 2>&1; then
         npm i -g gitmoji-cli
+        echo -e "\e[36mInstalled gitmoji-cli\e[m\n"
     fi
 }
 
@@ -258,6 +259,7 @@ function main() {
                 echo -e "\n\e[36mSetup [skipped]\e[m\n"
                 generate_links2home
                 echo -e "\n\e[36mLinks [ok]\e[m\n"
+                echo -e "\e[1;36mCastling completed😎\e[m\n"
                 exit 0
                 ;;
             --extra | -e)
@@ -267,7 +269,7 @@ function main() {
                 echo -e "\n\e[36mLinks [ok]\e[m\n"
                 extra_setup
                 echo -e "\n\e[36mExtra [ok]\e[m\n"
-                echo -e "\n\e[1;36mCastling completed😎\e[m\n"
+                echo -e "\e[1;36mCastling completed😎\e[m\n"
                 exit 0
                 ;;
 		esac
@@ -278,7 +280,7 @@ function main() {
     echo -e "\n\e[36mSetup [ok]\e[m\n"
     generate_links2home
     echo -e "\n\e[36mLinks [ok]\e[m\n"
-    echo -e "\n\e[1;36mCastling completed😎\e[m\n"
+    echo -e "\e[1;36mCastling completed😎\e[m\n"
     exit 0
 }
 
