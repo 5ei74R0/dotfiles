@@ -5,13 +5,14 @@ on: [push]
 jobs:
   ubuntu:
     runs-on: ubuntu-20.04
-    # container: ubuntu:20.04
+    container: ubuntu:20.04
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Install dependencies
       run: |
-        apt update && apt install -y expect
+        apt update
+        apt install -y expect
         expect -c "
         set timeout 300
         spawn apt install -y pkg-config
