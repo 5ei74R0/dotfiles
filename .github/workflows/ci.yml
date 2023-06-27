@@ -5,7 +5,7 @@ on: [push]
 jobs:
   ubuntu:
     runs-on: ubuntu-20.04
-    container: ubuntu:20.04
+    # container: ubuntu:20.04
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -21,6 +21,8 @@ jobs:
         exit 0
         "
         apt install -y libssl-dev build-essential git
+    - name: Install python dependencies
+      run: apt install -y gdb lcov libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev libncurses5-dev libreadline6-dev libsqlite3-dev lzma lzma-dev tk-dev uuid-dev zlib1g-dev
     - name: Install zsh
       run: apt install --no-install-recommends -y zsh
     - name: Run installer
