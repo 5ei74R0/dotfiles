@@ -41,14 +41,14 @@ local = '~/dotfiles/.config/zsh/defer'
 use = ['*.zsh']
 apply = ['defer']
 
-[plugins.dotfiles-local]
+[plugins.dotfiles-local-sync]
 local = '~/dotfiles/.config/zsh/local'
-use = ['*.zsh']
+use = ['*.sync.zsh']
 apply = ['source']
 
 [plugins.dotfiles-local-defer]
 local = '~/dotfiles/.config/zsh/local'
-use = ['*.zsh.defer']
+use = ['{!*.sync,*}.zsh']
 apply = ['defer']
 
 [plugins.rtx]
