@@ -153,7 +153,7 @@ function install_gitmoji() {
             npm i -g gitmoji-cli
             echo -e "\e[36mInstalled gitmoji-cli\e[m\n"
         else
-            echo -e "\e[33m[warn] npm is not available\e[m\n"
+            echo -e "\e[33m[warn] npm is not available...\e[m"
             echo -e "\e[33m       Install gitmoji-cli manually, please.\e[m\n"
         fi
     fi
