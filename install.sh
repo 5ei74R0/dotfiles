@@ -129,7 +129,6 @@ function install_rtx_cli() {
         cargo install rtx-cli
         echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
-    eval "$(rtx activate zsh)"
 }
 
 function install_runtimes_via_rtx() {
@@ -146,6 +145,7 @@ function install_runtimes_via_rtx() {
         rtx global python@3.8.10
         echo -e "\e[36mInstalled python via rtx-cli\e[m\n"
     fi
+    eval "$(rtx activate zsh)"
 }
 
 function install_gitmoji() {
