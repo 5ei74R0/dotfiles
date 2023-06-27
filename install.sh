@@ -149,8 +149,13 @@ function install_runtimes_via_rtx() {
 
 function install_gitmoji() {
     if ! command -v gitmoji >/dev/null 2>&1; then
-        npm i -g gitmoji-cli
-        echo -e "\e[36mInstalled gitmoji-cli\e[m\n"
+        if command -v npm >/dev/null 2>&1; then
+            npm i -g gitmoji-cli
+            echo -e "\e[36mInstalled gitmoji-cli\e[m\n"
+        else
+            echo -e "\e[33m[warn] npm is not available\e[m\n"
+            echo -e "\e[33m       Install gitmoji-cli manually, please.\e[m\n"
+        fi
     fi
 }
 
