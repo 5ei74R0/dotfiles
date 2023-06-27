@@ -129,6 +129,7 @@ function install_rtx_cli() {
         cargo install rtx-cli
         echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
+    eval "$(rtx activate zsh)"
 }
 
 function install_runtimes_via_rtx() {
