@@ -102,6 +102,11 @@ function install_sheldon() {
 }
 
 function install_extra_rust_tools() {
+    if ! command -v cargo install-update >/dev/null 2>&1; then
+        cargo install cargo-update
+        echo -e "\e[36mInstalled cargo-update\e[m\n"
+    fi
+
     if ! command -v bat >/dev/null 2>&1; then
         cargo install bat
         echo -e "\e[36mInstalled bat\e[m\n"
