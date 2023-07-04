@@ -19,6 +19,10 @@
         {
             "src": ".config/zsh/.zprofile",
             "dst": ".zprofile"
+        },
+        {
+            "src": ".config/git/ignore",
+            "dst": ".config/git/ignore"
         }
     ]
 }

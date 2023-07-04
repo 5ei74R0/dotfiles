@@ -17,3 +17,5 @@
 !/.config/zsh/
 !/.config/zsh/**
 /.config/zsh/local/**
+!/.config/git/
+!/.config/git/**
