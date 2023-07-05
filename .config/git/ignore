@@ -1,3 +1,6 @@
 # rtx-cli
 .tool-versions
 
+# vscode
+.vscode/
+
