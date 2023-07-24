@@ -2,7 +2,9 @@
 . "$HOME/.cargo/env"
 
 # Homebrew if exists
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ -s "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Activate local binaries
 if [[ -d "$HOME/.local/bin" ]]; then
