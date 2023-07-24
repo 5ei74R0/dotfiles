@@ -1,10 +1,14 @@
-# 
+# Cargo
 . "$HOME/.cargo/env"
 
+# Homebrew if exists
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Activate local binaries
 if [[ -d "$HOME/.local/bin" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
-  
+
 # if [[ -s "$HOME/.pyenv/" ]]; then
 #   export PYENV_ROOT="$HOME/.pyenv"
 #   export PATH="$PYENV_ROOT/bin:$PATH"
