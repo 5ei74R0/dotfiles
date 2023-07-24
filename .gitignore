@@ -19,3 +19,5 @@
 /.config/zsh/local/**
 !/.config/git/
 !/.config/git/**
+!/.config/wezterm/
+!/.config/wezterm/**
