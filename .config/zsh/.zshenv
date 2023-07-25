@@ -11,6 +11,11 @@ if [[ -d "$HOME/.local/bin" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Activate psql
+if [[ -d "/opt/homebrew/opt/libpq/bin" ]]; then
+  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+fi
+
 # Add Visual Studio Code (code) in MacOS
 if [ $(uname -s) = "Darwin" ]; then
   export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
