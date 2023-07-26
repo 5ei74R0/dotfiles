@@ -26,7 +26,7 @@
         },
         {
             "src": ".config/wezterm/main.lua",
-            "dst": ".wezterm.lua"
+            "dst": ".config/wezterm/wezterm.lua"
         }
     ]
 }
