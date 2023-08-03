@@ -194,10 +194,10 @@ function setup() {
 
 function generate_links2home() {
     local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
-    backup_dir="$dotfiles_dir/.dotbackup.$(date +%Y%m%d%H%M%S)"
+    backup_dir="$dotfiles_dir/.dotbackup/backup_$(date +%Y%m%d%H%M%S)"
     echo "backup old dotfiles into $backup_dir"
     if [ ! -d "$backup_dir" ]; then
-        mkdir "$backup_dir"
+        mkdir -p "$backup_dir"
     fi
 
     dotfile_mapping="$dotfiles_dir/link_mapper.json"
@@ -239,6 +239,9 @@ function generate_links2home() {
         fi
         ln -snf "$dotfiles_dir/$link_src" "$HOME/$link_dst"
     done
+
+    # If there is no change (if backup directory is empty), remove backup directory
+    rm -d "$backup_dir" 2>/dev/null
 }
 
 function extra_setup() {
