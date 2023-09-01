@@ -14,7 +14,7 @@ function auto_sync() {
             echo -e "\e[1;33m[warn] DIRTY DOTFILES\e[m"
             echo -e "\e[1;33m    -> Push your local changes in $dotfiles_dir\e[m"
         else
-            echo -e "\e[1;32m [successed]\e[m"
+            echo -e "\e[1;32m [succeeded]\e[m"
         fi
     else
         echo -e "\e[1;31m [failed]\e[m"
