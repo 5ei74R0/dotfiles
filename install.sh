@@ -111,9 +111,9 @@ function install_extra_rust_tools() {
         cargo install bat
         echo -e "\e[36mInstalled bat\e[m\n"
     fi
-    if ! command -v exa >/dev/null 2>&1; then
-        cargo install exa
-        echo -e "\e[36mInstalled exa\e[m\n"
+    if ! command -v eza >/dev/null 2>&1; then
+        cargo install eza
+        echo -e "\e[36mInstalled eza\e[m\n"
     fi
     if ! command -v fd >/dev/null 2>&1; then
         cargo install fd-find
