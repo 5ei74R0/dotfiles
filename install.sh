@@ -245,7 +245,7 @@ function generate_links2home() {
 }
 
 function extra_setup() {
-    # Install bat exa fd rg...
+    # Install bat eza fd rg...
     install_extra_rust_tools
 
     # Install rtx-cli

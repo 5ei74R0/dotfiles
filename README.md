@@ -13,7 +13,7 @@ Run `install.sh`.
 
 This installer has following options:
 - `--link | -l`: Just create symbolic links. Do not install any packages.
-- `--extra | -e`: Install extra packages. (e.g. `ripgrep`, `fd`, `bat`, `exa`, `dust`, `rtx-cli`, `npm`, `python`, `gitmoji-cli`...)
+- `--extra | -e`: Install extra packages. (e.g. `ripgrep`, `fd`, `bat`, `eza`, `dust`, `rtx-cli`, `npm`, `python`, `gitmoji-cli`...)
 
 ## Usage
 #### Add new config
