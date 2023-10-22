@@ -16,6 +16,12 @@ if [[ -d "/opt/homebrew/opt/libpq/bin" ]]; then
   export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
+# Activate mojo
+if [[ -d "$HOME/.modular" ]]; then
+  export MODULAR_HOME="$HOME/.modular"
+  export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
+fi
+
 # Add Visual Studio Code (code) in MacOS
 if [ $(uname -s) = "Darwin" ]; then
   export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
