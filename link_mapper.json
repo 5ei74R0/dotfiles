@@ -25,6 +25,10 @@
             "dst": ".config/git/ignore"
         },
         {
+            "src": ".config/git/config",
+            "dst": ".config/git/config"
+        },
+        {
             "src": ".config/wezterm/main.lua",
             "dst": ".config/wezterm/wezterm.lua"
         }
