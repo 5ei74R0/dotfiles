@@ -129,26 +129,24 @@ function install_extra_rust_tools() {
     fi
 }
 
-function install_rtx_cli() {
-    if ! command -v rtx >/dev/null 2>&1; then
-        cargo install rtx-cli
-        echo -e "\e[36mInstalled rtx-cli\e[m\n"
+function install_mise_en_place() {
+    if ! command -v mise >/dev/null 2>&1; then
+        cargo install mise
+        echo -e "\e[36mInstalled mise\e[m\n"
     fi
 }
 
-function install_runtimes_via_rtx() {
+function install_runtimes_via_mise() {
     # Node.js
-    if [ ! "$(rtx ls | rg node)" ]; then
-        rtx install node@18.16.1  # lts
-        rtx global node@18.16.1  # lts
-        echo -e "\e[36mInstalled node via rtx-cli\e[m\n"
+    if [ ! "$(mise bin-paths | rg node)" ]; then
+        mise use --global node@18.16.1  # lts
+        echo -e "\e[36mInstalled node via mise\e[m\n"
     fi
 
     # Python
-    if [ ! "$(rtx ls | rg python)" ]; then
-        rtx install python@3.8.10
-        rtx global python@3.8.10
-        echo -e "\e[36mInstalled python via rtx-cli\e[m\n"
+    if [ ! "$(mise bin-paths | rg python)" ]; then
+        mise use --global python@3.8.10
+        echo -e "\e[36mInstalled python via mise\e[m\n"
     fi
 }
 
@@ -248,11 +246,11 @@ function extra_setup() {
     # Install bat eza fd rg...
     install_extra_rust_tools
 
-    # Install rtx-cli
-    install_rtx_cli
+    # Install mise
+    install_mise_en_place
 
     # Install node python...
-    install_runtimes_via_rtx
+    install_runtimes_via_mise
 
     # Install gitmoji
     install_gitmoji

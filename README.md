@@ -2,7 +2,7 @@
 Quick castling w/ `install.sh`
 ### Features
 - Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
-- Runtime management w/ [rtx-cli](https://github.com/jdxcode/rtx)
+- Runtime management w/ [mise (rtx-cli)](https://mise.jdx.dev/)
 - Dress up w/ [Starship](https://starship.rs/) + [UDEV Gothic](https://github.com/yuru7/udev-gothic)
 - Autosync
 - one-step installer, [`install.sh`](https://github.com/5ei74R0/dotfiles/blob/main/install.sh#L248-L285)
@@ -13,7 +13,7 @@ Run `install.sh`.
 
 This installer has following options:
 - `--link | -l`: Just create symbolic links. Do not install any packages.
-- `--extra | -e`: Install extra packages. (e.g. `ripgrep`, `fd`, `bat`, `eza`, `dust`, `rtx-cli`, `npm`, `python`, `gitmoji-cli`...)
+- `--extra | -e`: Install extra packages. (e.g. `ripgrep`, `fd`, `bat`, `eza`, `dust`, `mise` (`rtx-cli`), `npm`, `python`, `gitmoji-cli`...)
 
 ## Usage
 #### Add new config

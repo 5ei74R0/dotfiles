@@ -51,8 +51,8 @@ local = '~/dotfiles/.config/zsh/local'
 use = ['{!*.sync,*}.zsh']
 apply = ['defer']
 
-[plugins.rtx]
-inline = 'eval "$(rtx activate zsh)"'
+[plugins.mise]
+inline = 'eval "$(mise activate zsh)"'
 
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
