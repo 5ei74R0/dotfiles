@@ -6,6 +6,11 @@ if [[ -s "/opt/homebrew/bin/brew" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Rye if exists
+if [[ -s "$HOME/.rye/env" ]]; then
+  . "$HOME/.rye/env"
+fi
+
 # Activate local binaries
 if [[ -d "$HOME/.local/bin" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
