@@ -1,5 +1,5 @@
 -- Pull in the wezterm API
-local wezterm = require 'wezterm'
+local wezterm = require "wezterm"
 
 -- This table will hold the configuration.
 local config = {}
@@ -13,15 +13,16 @@ end
 -- This is where you actually apply your config choices
 
 -- Appearance
-config.font = wezterm.font { family = 'UDEV Gothic 35NFLG', weight = 'Bold' }
+config.font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Bold" }
 config.font_size = 13.5
 
 use_fancy_tab_bar = false
 
+-- Background
 config.window_background_opacity = 0.95
 config.window_background_gradient = {
-  colors = { '#002916', '#050633', '#37040e' },
-  -- colors = { '#003c29', '#302b63', '#5c243e' },
+  colors = { "#002916", "#050633", "#37040e" },
+  -- colors = { "#003c29", "#302b63", "#5c243e" },
   orientation = {
     Radial = {
       -- Specifies the x coordinate of the center of the circle,
@@ -41,6 +42,21 @@ config.window_background_gradient = {
       -- Values larger than 1 are possible.
       radius = 1.30,
     },
+  },
+}
+
+-- Overwrite the background with the image if "/dotfiles/bg-image.png" exists.
+local home = os.getenv("HOME")
+local bg_image_path = home.."/dotfiles/bg-image.png"
+config.background = {
+  {
+    source = {
+      File = bg_image_path,
+    },
+    width = "Cover",
+    height = "Cover",
+    horizontal_align = "Center",
+    vertical_align = "Top",
   },
 }
 
