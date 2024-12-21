@@ -1,53 +1,70 @@
 -- Pull in the wezterm API
 local wezterm = require "wezterm"
 
--- This table will hold the configuration.
-local config = {}
+-- This table will hold the configuration
+config = wezterm.config_builder()
 
--- In newer versions of wezterm, use the config_builder which will
--- help provide clearer error messages
-if wezterm.config_builder then
-  config = wezterm.config_builder()
-end
+-- Enable auto reload
+config.automatically_reload_config = true
 
--- This is where you actually apply your config choices
 
 -- Appearance
 config.font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Bold" }
 config.font_size = 13.5
 
-use_fancy_tab_bar = false
+-- Appearance > Tab
+config.window_decorations = "RESIZE | INTEGRATED_BUTTONS" 
+local SOLID_LEFT_ARROW = wezterm.nerdfonts.ple_lower_right_triangle
+local SOLID_RIGHT_ARROW = wezterm.nerdfonts.ple_upper_left_triangle
+config.colors = {
+  tab_bar = {
+    inactive_tab_edge = "none",
+  },
+}
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+  local background = "#5c6d74"
+  local foreground = "#FFFFFF"
+  local edge_background = "none"
+  if tab.is_active then
+    background = "#ae8b2d"
+    foreground = "#FFFFFF"
+  end
+  local edge_foreground = background
 
--- Background
+  local title = "  " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "  "
+
+  return {
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = SOLID_LEFT_ARROW },
+    { Background = { Color = background } },
+    { Foreground = { Color = foreground } },
+    { Text = title },
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = SOLID_RIGHT_ARROW },
+  }
+end)
+
+-- Appearance > Background
 config.window_background_opacity = 0.95
 config.window_background_gradient = {
-  colors = { "#002916", "#050633", "#37040e" },
-  -- colors = { "#003c29", "#302b63", "#5c243e" },
+  -- Based on the color of the active tab `#ae8b2d`
+  colors = { "#020200", "#392A00" , "#ae8b2d"},
   orientation = {
     Radial = {
-      -- Specifies the x coordinate of the center of the circle,
-      -- in the range 0.0 through 1.0.  The default is 0.5 which
-      -- is centered in the X dimension.
+      -- X and y coordinate of the center of the circle. Range=[0.0, 1.0]
       cx = 0.25,
-
-      -- Specifies the y coordinate of the center of the circle,
-      -- in the range 0.0 through 1.0.  The default is 0.5 which
-      -- is centered in the Y dimension.
       cy = 0.25,
-
       -- Specifies the radius of the notional circle.
-      -- The default is 0.5, which combined with the default cx
-      -- and cy values places the circle in the center of the
-      -- window, with the edges touching the window edges.
-      -- Values larger than 1 are possible.
-      radius = 1.30,
+      radius = 1.50,
     },
   },
 }
 
 -- Overwrite the background with the image if "/dotfiles/bg-image.png" exists.
 local home = os.getenv("HOME")
-local bg_image_path = home.."/dotfiles/bg-image.png"
+local bg_image_path = home .. "/dotfiles/bg-image.png"
 config.background = {
   {
     source = {
