@@ -1,9 +1,10 @@
 # Simple, Rust-Centric `dotfiles`
 Quick castling w/ `install.sh`
 
-<div style="text-align: center;">
-  <img src="https://res.cloudinary.com/zenn/image/fetch/s--QXp-o4ub--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_1200/https://storage.googleapis.com/zenn-user-upload/deployed-images/ce6f97bbd960d167bb536ddd.png%3Fsha%3D691458ee2c7b66c62ab1a135b0de945d46543aaf" alt="top" style="width: 70%;">
-</div>
+<p align="center">
+  <img src="https://res.cloudinary.com/zenn/image/fetch/s--QXp-o4ub--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_1200/https://storage.googleapis.com/zenn-user-upload/deployed-images/ce6f97bbd960d167bb536ddd.png%3Fsha%3D691458ee2c7b66c62ab1a135b0de945d46543aaf" alt="top" width="70%">
+</p>
+
 
 ### Features
 - Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
