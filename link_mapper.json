@@ -31,6 +31,10 @@
         {
             "src": ".config/wezterm/main.lua",
             "dst": ".config/wezterm/wezterm.lua"
+        },
+        {
+            "src": ".config/nvim",
+            "dst": ".config/nvim"
         }
     ]
 }

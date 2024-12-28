@@ -21,3 +21,6 @@
 !/.config/git/**
 !/.config/wezterm/
 !/.config/wezterm/**
+!/.config/nvim/
+!/.config/nvim/**
+
