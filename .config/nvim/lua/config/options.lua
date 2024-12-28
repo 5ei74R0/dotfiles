@@ -11,7 +11,7 @@ vim.opt.listchars = {
 }
 
 -- Tab
-vim.opt.expandtab = true  -- converrt <tab> to spaces
-vim.opt.shiftwidth = 2  -- <tab> would be converted to 2 spaces
-vim.opt.tabstop = 2  -- length of <tab>
+vim.opt.expandtab = true  -- convert <tab> to spaces
+vim.opt.shiftwidth = 2  -- length of <tab>
+vim.opt.tabstop = 2  -- length of an indent
 
