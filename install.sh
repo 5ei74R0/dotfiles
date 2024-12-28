@@ -166,8 +166,13 @@ function install_nvim() {
     if ! command -v nvim >/dev/null 2>&1; then
         if command -v brew >/dev/null 2>&1; then
             brew install neovim
-        elif command -v apt >/dev/null 2>&1; then
-            apt install -y neovim
+        elif [ $(uname -s) = "Linux" ]; then
+	    mkdir -p ~/.local/bin
+	    curl -L https://github.com/neovim/neovim/releases/latest/download/nvim.appimage -o ~/.local/bin/nvim
+	    chmod u+x ~/.local/bin/nvim
+	else
+            echo -e "\e[33m[warn] Predefined configuration cannot handle your environment...\e[m"
+            echo -e "\e[33m       Install neovim manually, please.\e[m\n"
         fi
         echo -e "\e[36mInstalled neovim\e[m\n"
     fi
