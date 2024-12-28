@@ -162,6 +162,17 @@ function install_gitmoji() {
     fi
 }
 
+function install_nvim() {
+    if ! command -v nvim >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
+            brew install neovim
+        elif command -v apt >/dev/null 2>&1; then
+            apt install -y neovim
+        fi
+        echo -e "\e[36mInstalled neovim\e[m\n"
+    fi
+}
+
 function setup() {
     local dotfiles_dir="$(cd "$(dirname "$0")" && pwd -P)"
 
@@ -254,6 +265,9 @@ function extra_setup() {
 
     # Install gitmoji
     install_gitmoji
+
+    # Install neovim
+    install_nvim
 }
 
 function main() {
