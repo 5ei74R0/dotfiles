@@ -13,9 +13,7 @@ config.font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Bold" }
 config.font_size = 13.5
 
 -- Appearance > Tab
-config.window_decorations = "RESIZE | INTEGRATED_BUTTONS" 
-local SOLID_LEFT_ARROW = wezterm.nerdfonts.ple_lower_right_triangle
-local SOLID_RIGHT_ARROW = wezterm.nerdfonts.ple_upper_left_triangle
+config.window_decorations = "RESIZE | INTEGRATED_BUTTONS"
 config.colors = {
   tab_bar = {
     inactive_tab_edge = "none",
@@ -31,18 +29,21 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
   end
   local edge_foreground = background
 
-  local title = "  " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "  "
+  local dynamic_padding = tab.is_active and "        " or "  "
+  local pray_for_nobug = tab.is_active and wezterm.nerdfonts.pom_clean_code .. " " or ""
+  local title = wezterm.truncate_right(tab.active_pane.title, max_width - 1)
+  local dressed_title = dynamic_padding .. pray_for_nobug .. " " .. title .. dynamic_padding
 
   return {
     { Background = { Color = edge_background } },
     { Foreground = { Color = edge_foreground } },
-    { Text = SOLID_LEFT_ARROW },
+    { Text = wezterm.nerdfonts.ple_pixelated_squares_big_mirrored .. "  " },
     { Background = { Color = background } },
     { Foreground = { Color = foreground } },
-    { Text = title },
+    { Text = dressed_title },
     { Background = { Color = edge_background } },
     { Foreground = { Color = edge_foreground } },
-    { Text = SOLID_RIGHT_ARROW },
+    { Text = wezterm.nerdfonts.ple_pixelated_squares_big },
   }
 end)
 
