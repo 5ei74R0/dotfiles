@@ -15,7 +15,7 @@ config.font_size = 12.5
 -- Appearance > Tab
 config.window_decorations = "RESIZE | INTEGRATED_BUTTONS"
 config.window_frame = {
-  font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Regular" },
+  font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Bold" },
   font_size = 13.5,
 }
 config.colors = {
