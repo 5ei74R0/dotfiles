@@ -10,10 +10,14 @@ config.automatically_reload_config = true
 
 -- Appearance
 config.font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Bold" }
-config.font_size = 13.5
+config.font_size = 12.5
 
 -- Appearance > Tab
 config.window_decorations = "RESIZE | INTEGRATED_BUTTONS"
+config.window_frame = {
+  font = wezterm.font { family = "UDEV Gothic 35NFLG", weight = "Regular" },
+  font_size = 13.5,
+}
 config.colors = {
   tab_bar = {
     inactive_tab_edge = "none",
@@ -29,18 +33,18 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
   end
   local edge_foreground = background
 
-  local dynamic_padding = tab.is_active and "        " or "  "
-  local pray_for_nobug = tab.is_active and wezterm.nerdfonts.pom_clean_code .. " " or ""
+  local dynamic_padding = tab.is_active and "   " or ""
+  local may_the_code_be_bug_free = tab.is_active and wezterm.nerdfonts.pom_clean_code or ""
   local title = wezterm.truncate_right(tab.active_pane.title, max_width - 1)
-  local dressed_title = dynamic_padding .. pray_for_nobug .. " " .. title .. dynamic_padding
+  local dressed_title = dynamic_padding .. may_the_code_be_bug_free .. " " .. title .. dynamic_padding
 
   return {
     { Background = { Color = edge_background } },
     { Foreground = { Color = edge_foreground } },
-    { Text = wezterm.nerdfonts.ple_pixelated_squares_big_mirrored .. "  " },
+    { Text = wezterm.nerdfonts.ple_pixelated_squares_big_mirrored .. " " },
     { Background = { Color = background } },
     { Foreground = { Color = foreground } },
-    { Text = dressed_title },
+    { Text = dressed_title .. " " },
     { Background = { Color = edge_background } },
     { Foreground = { Color = edge_foreground } },
     { Text = wezterm.nerdfonts.ple_pixelated_squares_big },
