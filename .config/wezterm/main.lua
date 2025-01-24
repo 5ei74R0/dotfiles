@@ -34,9 +34,9 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
   local edge_foreground = background
 
   local dynamic_padding = tab.is_active and "   " or ""
-  local may_the_code_be_bug_free = tab.is_active and wezterm.nerdfonts.pom_clean_code or ""
+  local MAY_THE_BUG_BE_WITHOUT_YOU = tab.is_active and wezterm.nerdfonts.pom_clean_code or ""
   local title = wezterm.truncate_right(tab.active_pane.title, max_width - 1)
-  local dressed_title = dynamic_padding .. may_the_code_be_bug_free .. " " .. title .. dynamic_padding
+  local dressed_title = dynamic_padding .. MAY_THE_BUG_BE_WITHOUT_YOU .. " " .. title .. dynamic_padding
 
   return {
     { Background = { Color = edge_background } },
