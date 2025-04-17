@@ -1,2 +1,4 @@
 [alias]
     graph = log --oneline --graph --branches=\"*\"
+    graphc = log --oneline --graph --branches=\"*\" --color="always"
+
