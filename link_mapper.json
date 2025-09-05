@@ -35,6 +35,10 @@
         {
             "src": ".config/nvim",
             "dst": ".config/nvim"
+        },
+        {
+            "src": ".config/git/scripts",
+            "dst": ".local/bin/git-script"
         }
     ]
 }
