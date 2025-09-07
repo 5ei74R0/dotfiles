@@ -2,4 +2,3 @@
     graph = log --oneline --graph --branches=\"*\"
     graphc = log --oneline --graph --branches=\"*\" --color="always"
     step = !"bash $HOME/.local/bin/git-script/git-step-away.sh"
-    step-away = !"bash $HOME/.local/bin/git-script/git-step-away.sh"

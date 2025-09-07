@@ -17,3 +17,10 @@ zstyle ':completion:*' verbose true
 
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+# Git custom commands
+_git_step() {
+    words[2]='switch'  # get completion as if calling git switch
+    __git_zsh_bash_func 'switch'
+}
+zstyle ':completion:*:*:git:*' user-commands step:'switch with auto-stash'

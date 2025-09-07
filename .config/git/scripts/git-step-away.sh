@@ -30,14 +30,22 @@
 #   And many more...
 #
 # INSTALLATION:
-#   1. Save this script to ~/.local/bin/git-step
-#   2. Make it executable: chmod +x ~/.local/bin/git-step  
+#   1. Save this script to ~/.local/bin/git-step-away
+#   2. Make it executable: chmod +x ~/.local/bin/git-step-away  
 #   3. Add to ~/.gitconfig:
-#      [step]
-#          script-path = ~/.local/bin/git-step
 #      [alias]
-#          step = !git config step.script-path | xargs -I {} bash {}
-#          step-away = !git config step.script-path | xargs -I {} bash {}
+#          step = !"bash $HOME/.local/bin/git-script/git-step-away.sh"
+#
+# SET COMPLETION:
+#   For Zsh, add to your completion setup (e.g., in .zshrc):
+#       ```zsh
+#       autoload -Uz compinit && compinit
+#       _git_step() {
+#           words[2]='switch'  # get completion as if calling git switch
+#           __git_zsh_bash_func 'switch'
+#       }
+#       zstyle ':completion:*:*:git:*' user-commands step:'switch with auto-stash'
+#       ```
 #
 # EXAMPLES:
 #   git step feature-branch              # Basic branch switch
@@ -58,7 +66,7 @@ git_step() {
         echo "Error: Not a git repository"
         return 1
     fi
-    
+
     # Handle help/usage display
     if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ $# -eq 0 ]; then
         echo "Usage: git step [git-switch-options] <branch-name|start-point>"
@@ -98,15 +106,15 @@ git_step() {
         # Create new stash with distinctive label
         git stash push -m "[auto-stash by git step] WIP on $current_branch" > /dev/null 2>&1
     fi
-    
+
     # MAIN OPERATION: Execute git switch with all original arguments
     git switch "$@"
     local switch_exit_code=$?
-    
+
     # POST-SWITCH HOOK: Restore stash if switch was successful
     if [ $switch_exit_code -eq 0 ]; then
         local new_branch=$(git branch --show-current)
-        
+
         # Always attempt stash restoration for named branches
         # This handles both branch switches and explicit switches to current branch
         if [ -n "$new_branch" ]; then
@@ -133,7 +141,7 @@ git_step() {
             fi
         fi
     fi
-    
+
     # Return the original git switch exit code
     return $switch_exit_code
 }
