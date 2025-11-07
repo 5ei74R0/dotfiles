@@ -24,3 +24,6 @@ _git_step() {
     __git_zsh_bash_func 'switch'
 }
 zstyle ':completion:*:*:git:*' user-commands step:'switch with auto-stash'
+
+# FZF completion
+source <(fzf --zsh)
