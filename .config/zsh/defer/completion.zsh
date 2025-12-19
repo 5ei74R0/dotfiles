@@ -26,4 +26,6 @@ _git_step() {
 zstyle ':completion:*:*:git:*' user-commands step:'switch with auto-stash'
 
 # FZF completion
-source <(fzf --zsh)
+if [[ $(command -v fzf) ]]; then
+    source <(fzf --zsh)
+fi
