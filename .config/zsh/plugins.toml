@@ -19,16 +19,11 @@ defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file 
 github = 'romkatv/zsh-defer'
 apply = ['source']
 
-[plugins.zsh-autosuggestions]
-github = 'zsh-users/zsh-autosuggestions'
-apply = ['defer']
+[plugins.mise]
+inline = 'eval "$(mise activate zsh)"'
 
 [plugins.zsh-completions]
 github = 'zsh-users/zsh-completions'
-apply = ['defer']
-
-[plugins.zsh-syntax-highlighting]
-github = 'zsh-users/zsh-syntax-highlighting'
 apply = ['defer']
 
 [plugins.dotfiles-sync]
@@ -36,23 +31,28 @@ local = '~/dotfiles/.config/zsh/sync'
 use = ['*.zsh']
 apply = ['source']
 
-[plugins.dotfiles-defer]
-local = '~/dotfiles/.config/zsh/defer'
-use = ['*.zsh']
-apply = ['defer']
-
 [plugins.dotfiles-local-sync]
 local = '~/dotfiles/.config/zsh/local'
 use = ['*.sync.zsh']
 apply = ['source']
 
+[plugins.zsh-autosuggestions]
+github = 'zsh-users/zsh-autosuggestions'
+apply = ['defer']
+
+[plugins.zsh-syntax-highlighting]
+github = 'zsh-users/zsh-syntax-highlighting'
+apply = ['defer']
+
+[plugins.dotfiles-defer]
+local = '~/dotfiles/.config/zsh/defer'
+use = ['*.zsh']
+apply = ['defer']
+
 [plugins.dotfiles-local-defer]
 local = '~/dotfiles/.config/zsh/local'
 use = ['{!*.sync,*}.zsh']
 apply = ['defer']
-
-[plugins.mise]
-inline = 'eval "$(mise activate zsh)"'
 
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
