@@ -1,4 +1,7 @@
-autoload -Uz compinit && compinit
+if ! (( ${+functions[compdef]} )); then
+    # Ensure compdef is loaded & block if already loaded
+	autoload -Uz compinit && compinit
+fi
 
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
