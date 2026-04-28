@@ -4,11 +4,11 @@
 #
 # This script is designed to pair with `git step`:
 # - `git step` for branch switching inside one worktree
-# - `git wt`   for spawning / entering / removing sibling worktrees
+# - `git wt`   for spawning / entering / removing task worktrees
 #
 # The defaults are intentionally lightweight:
-# - worktrees live next to the main worktree unless `wt.rootDir` is set
-# - branches default to `wt/<task-slug>` unless `wt.branchPrefix` is set
+# - worktrees live under the main worktree's `.git-wt` unless `wt.rootDir` is set
+# - branches default to `<task-path>` unless `wt.branchPrefix` is set
 # - `git wt new <task> --agent codex|claude` can immediately launch an agent
 #
 set -euo pipefail
@@ -100,34 +100,44 @@ repo_name() {
   basename "$(main_worktree_path)"
 }
 
-default_worktree_root() {
+configured_worktree_root() {
   local configured main_path parent
   configured="$(git config --get wt.rootDir 2>/dev/null || true)"
+  [ -n "$configured" ] || return 1
+
   main_path="$(main_worktree_path)"
   parent="$(dirname "$main_path")"
 
-  if [ -n "$configured" ]; then
-    configured="$(expand_home "$configured")"
-    case "$configured" in
-      /*)
-        printf '%s\n' "$configured"
-        ;;
-      *)
-        printf '%s/%s\n' "$parent" "$configured"
-        ;;
-    esac
-    return 0
-  fi
+  configured="$(expand_home "$configured")"
+  case "$configured" in
+    /*)
+      printf '%s\n' "$configured"
+      ;;
+    *)
+      printf '%s/%s\n' "$parent" "$configured"
+      ;;
+  esac
+}
 
-  printf '%s\n' "$parent"
+default_worktree_root() {
+  printf '%s/.git-wt\n' "$(main_worktree_path)"
+}
+
+ensure_default_worktree_root() {
+  local root ignore_file
+  root="$1"
+  ignore_file="$root/.gitignore"
+
+  mkdir -p "$root"
+
+  if [ ! -e "$ignore_file" ]; then
+    printf '*\n' > "$ignore_file"
+  fi
 }
 
 default_branch_prefix() {
   local prefix
   prefix="$(git config --get wt.branchPrefix 2>/dev/null || true)"
-  if [ -z "$prefix" ]; then
-    prefix='wt'
-  fi
   prefix="${prefix%/}"
   printf '%s\n' "$prefix"
 }
@@ -149,6 +159,31 @@ slugify() {
           -e 's#-\{2,\}#-#g' \
           -e 's#^[-.]##' \
           -e 's#[-.]$##'
+}
+
+path_slugify() {
+  local input component result='' slug
+  input="$1"
+
+  while [ -n "$input" ]; do
+    component="${input%%/*}"
+    if [ "$component" = "$input" ]; then
+      input=''
+    else
+      input="${input#*/}"
+    fi
+
+    slug="$(slugify "$component")"
+    [ -n "$slug" ] || continue
+
+    if [ -n "$result" ]; then
+      result="$result/$slug"
+    else
+      result="$slug"
+    fi
+  done
+
+  printf '%s\n' "$result"
 }
 
 branch_exists() {
@@ -189,14 +224,24 @@ branch_for_worktree() {
 }
 
 worktree_matches_target() {
-  local target worktree branch repo short_path short_branch path_base
+  local target worktree branch repo default_root root_relative=''
+  local short_path short_branch path_base
   target="$1"
   worktree="$2"
   branch="$3"
   repo="$4"
+  default_root="${5:-}"
 
   [ "$target" = "$worktree" ] && return 0
   [ -n "$branch" ] && [ "$target" = "$branch" ] && return 0
+
+  if [ -n "$default_root" ]; then
+    case "$worktree" in
+      "$default_root"/*)
+        root_relative="${worktree#"$default_root"/}"
+        ;;
+    esac
+  fi
 
   path_base="$(basename "$worktree")"
   short_path="$path_base"
@@ -216,15 +261,17 @@ worktree_matches_target() {
 
   [ "$target" = "$path_base" ] && return 0
   [ "$target" = "$short_path" ] && return 0
+  [ -n "$root_relative" ] && [ "$target" = "$root_relative" ] && return 0
   [ -n "$short_branch" ] && [ "$target" = "$short_branch" ] && return 0
 
   return 1
 }
 
 find_worktree_path() {
-  local target normalized_target repo matches=0 found='' worktree='' branch=''
+  local target normalized_target repo default_root matches=0 found='' worktree='' branch=''
   target="${1:-}"
   repo="$(repo_name)"
+  default_root="$(default_worktree_root)"
 
   if [ -z "$target" ]; then
     current_worktree_path
@@ -240,7 +287,7 @@ find_worktree_path() {
 
   while IFS= read -r line || [ -n "$line" ]; do
     if [ -z "$line" ]; then
-      if [ -n "$worktree" ] && worktree_matches_target "$normalized_target" "$worktree" "$branch" "$repo"; then
+      if [ -n "$worktree" ] && worktree_matches_target "$normalized_target" "$worktree" "$branch" "$repo" "$default_root"; then
         matches=$((matches + 1))
         found="$worktree"
       fi
@@ -282,7 +329,7 @@ Usage:
   git wt prune
 
 Subcommands:
-  new     Create a sibling worktree for a task.
+  new     Create a worktree for a task.
   ls      Show known worktrees in a compact view.
   path    Print the resolved worktree path.
   shell   Open an interactive shell inside a worktree.
@@ -314,7 +361,7 @@ Usage:
 
 Options:
   --from <ref>      Base commit/branch/tag. Default: wt.defaultBase or HEAD.
-  --branch <name>   Explicit branch name. Default: <prefix>/<task-slug>.
+  --branch <name>   Explicit branch name. Default: <task-path>.
   --path <path>     Explicit worktree path.
   --agent <name>    Launch an agent after creation: codex | claude.
   --detach          Create a detached worktree instead of a branch.
@@ -328,7 +375,8 @@ EOF
 
 cmd_new() {
   local name='' from='' branch='' path='' agent=''
-  local slug root repo lock='false' detach='false' no_launch='false'
+  local slug path_slug root repo lock='false' detach='false' no_launch='false'
+  local default_root='false'
   local -a agent_args=()
 
   while [ $# -gt 0 ]; do
@@ -392,16 +440,23 @@ cmd_new() {
 
   slug="$(slugify "$name")"
   [ -n "$slug" ] || die 'failed to derive task slug'
+  path_slug="$(path_slugify "$name")"
+  [ -n "$path_slug" ] || die 'failed to derive task path'
 
   if [ -z "$from" ]; then
     from="$(default_base_ref)"
   fi
 
   repo="$(repo_name)"
-  root="$(default_worktree_root)"
 
   if [ -z "$path" ]; then
-    path="$root/$repo-$slug"
+    if root="$(configured_worktree_root)"; then
+      path="$root/$repo-$slug"
+    else
+      root="$(default_worktree_root)"
+      default_root='true'
+      path="$root/$path_slug"
+    fi
   else
     path="$(expand_home "$path")"
   fi
@@ -410,6 +465,9 @@ cmd_new() {
     die "path already exists: $path"
   fi
 
+  if [ "$default_root" = 'true' ]; then
+    ensure_default_worktree_root "$root"
+  fi
   mkdir -p "$(dirname "$path")"
 
   if [ "$detach" = 'true' ]; then
@@ -419,9 +477,9 @@ cmd_new() {
       local prefix
       prefix="$(default_branch_prefix)"
       if [ -n "$prefix" ]; then
-        branch="$prefix/$slug"
+        branch="$prefix/$path_slug"
       else
-        branch="$slug"
+        branch="$path_slug"
       fi
     fi
 
@@ -447,9 +505,9 @@ cmd_new() {
   fi
 
   note "enter  : cd \"$path\""
-  note "shell  : git wt shell $slug"
+  note "shell  : git wt shell $path_slug"
   if [ -n "$agent" ]; then
-    note "agent  : git wt agent $agent $slug"
+    note "agent  : git wt agent $agent $path_slug"
   fi
 
   if [ -n "$agent" ] && [ "$no_launch" != 'true' ]; then

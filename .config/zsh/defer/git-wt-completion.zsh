@@ -2,11 +2,14 @@
 # Loaded by sheldon because this file lives under `.config/zsh/defer/*.zsh`.
 
 _git_wt_worktree_names() {
-  local repo worktree branch
+  local repo worktree branch common_dir main_root default_root root_relative
   local -a items
   local base
 
-  repo="$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")"
+  common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || return
+  main_root="$(cd "${common_dir:h}" 2>/dev/null && pwd -P)" || return
+  repo="${main_root:t}"
+  default_root="$main_root/.git-wt"
   worktree=''
   branch=''
   items=()
@@ -17,6 +20,12 @@ _git_wt_worktree_names() {
         if [[ -n "$branch" ]]; then
           items+=("$branch:$worktree")
           items+=("${branch:t}:$worktree")
+        fi
+
+        root_relative=''
+        if [[ "$worktree" == "$default_root"/* ]]; then
+          root_relative="${worktree#$default_root/}"
+          items+=("$root_relative:$worktree")
         fi
 
         base="${worktree:t}"
@@ -51,7 +60,7 @@ _git_wt() {
   local -a commands
 
   commands=(
-    'new:create a sibling worktree for a task'
+    'new:create a worktree for a task'
     'ls:list worktrees'
     'path:print a worktree path'
     'shell:open a shell in a worktree'
