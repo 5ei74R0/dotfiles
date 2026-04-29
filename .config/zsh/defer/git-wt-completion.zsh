@@ -2,13 +2,13 @@
 # Loaded by sheldon because this file lives under `.config/zsh/defer/*.zsh`.
 
 _git_wt_worktree_names() {
-  local repo worktree branch common_dir main_root default_root root_relative
+  emulate -L zsh
+
+  local worktree branch common_dir main_root default_root root_relative
   local -a items
-  local base
 
   common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || return
   main_root="$(cd "${common_dir:h}" 2>/dev/null && pwd -P)" || return
-  repo="${main_root:t}"
   default_root="$main_root/.git-wt"
   worktree=''
   branch=''
@@ -16,24 +16,15 @@ _git_wt_worktree_names() {
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ -z "$line" ]]; then
-      if [[ -n "$worktree" ]]; then
+      if [[ -n "$worktree" && "$worktree" != "$main_root" ]]; then
         if [[ -n "$branch" ]]; then
-          items+=("$branch:$worktree")
-          items+=("${branch:t}:$worktree")
+          items+=("$branch")
         fi
 
         root_relative=''
         if [[ "$worktree" == "$default_root"/* ]]; then
           root_relative="${worktree#$default_root/}"
-          items+=("$root_relative:$worktree")
-        fi
-
-        base="${worktree:t}"
-        items+=("$base:$worktree")
-        if [[ "$base" == "$repo" ]]; then
-          items+=("main:$worktree")
-        elif [[ "$base" == ${repo}-* ]]; then
-          items+=("${base#$repo-}:$worktree")
+          items+=("$root_relative")
         fi
       fi
       worktree=''
@@ -51,64 +42,204 @@ _git_wt_worktree_names() {
     esac
   done < <(git worktree list --porcelain 2>/dev/null; printf '\n')
 
-  _describe -t worktrees 'worktrees' items
+  items=("${(@u)items}")
+  (( ${#items[@]} )) || return 1
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${items[*]}"
+  else
+    compadd -Q -S ' ' -- "${items[@]}"
+  fi
 }
 
 _git_wt() {
-  local curcontext="$curcontext" state
-  typeset -A opt_args
-  local -a commands
+  local subcmd cur_ prev_ cword_ ret=1
 
+  cur_="${cur-}"
+  prev_="${prev-}"
+  cword_="${cword:-$((CURRENT - 1))}"
+  subcmd="${words[2]-}"
+
+  if [[ -z "$subcmd" || "$cword_" -le 2 ]]; then
+    _git_wt_commands && ret=0
+    [[ "$ret" -eq 0 ]] && _ret=0
+    return ret
+  fi
+
+  case "$subcmd" in
+    new)
+      case "$prev_" in
+        --from)
+          __git_complete_refs && ret=0
+          ;;
+        --branch)
+          __git_complete_refs --mode=heads && ret=0
+          ;;
+        --path)
+          _files -/ && ret=0
+          ;;
+        --agent)
+          _git_wt_agents && ret=0
+          ;;
+        *)
+          if [[ "$cur_" == -* ]]; then
+            _git_wt_new_options && ret=0
+          else
+            ret=0
+          fi
+          ;;
+      esac
+      ;;
+    path|shell)
+      if [[ "$cword_" -eq 3 ]]; then
+        _git_wt_worktree_names && ret=0
+      else
+        ret=0
+      fi
+      ;;
+    agent)
+      case "$cword_" in
+        3)
+          _git_wt_agents && ret=0
+          ;;
+        4)
+          _git_wt_worktree_names && ret=0
+          ;;
+        *)
+          _files && ret=0
+          ;;
+      esac
+      ;;
+    rm|remove)
+      if [[ "$cur_" == -* ]]; then
+        _git_wt_rm_options && ret=0
+      elif [[ "$cword_" -eq 3 ]]; then
+        _git_wt_worktree_names && ret=0
+      else
+        ret=0
+      fi
+      ;;
+    prune)
+      if [[ "$prev_" == --expire ]]; then
+        ret=0
+      elif [[ "$cur_" == -* ]]; then
+        _git_wt_prune_options && ret=0
+      else
+        ret=0
+      fi
+      ;;
+    ls|list|help)
+      ret=0
+      ;;
+  esac
+
+  if (( ret == 0 )); then
+    _ret=0
+  fi
+  return ret
+}
+
+_git_wt_commands() {
+  emulate -L zsh
+
+  local -a commands
   commands=(
     'new:create a worktree for a task'
     'ls:list worktrees'
+    'list:list worktrees'
     'path:print a worktree path'
     'shell:open a shell in a worktree'
     'agent:launch codex or claude in a worktree'
     'rm:remove a linked worktree'
+    'remove:remove a linked worktree'
     'prune:prune stale worktree metadata'
     'help:show help'
   )
-
-  if (( CURRENT == 3 )); then
-    _describe -t commands 'git wt commands' commands
-    return
+  commands=("${commands[@]%%:*}")
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${commands[*]}"
+  else
+    compadd -Q -S ' ' -- "${commands[@]}"
   fi
-
-  case "${words[3]}" in
-    new)
-      _arguments -C \
-        '--from[base commit or branch]:base ref:_git_revisions' \
-        '--branch[explicit branch name]:branch:_git_branch_names' \
-        '--path[explicit worktree path]:path:_files -/' \
-        '--agent[launch agent after creation]:agent:(codex claude)' \
-        '--detach[create a detached worktree]' \
-        '--lock[lock the new worktree]' \
-        '--no-launch[skip launching the selected agent]' \
-        '*::task name:'
-      ;;
-    path|shell)
-      _arguments '1:worktree:_git_wt_worktree_names'
-      ;;
-    agent)
-      if (( CURRENT == 4 )); then
-        _values 'agent' codex claude
-        return
-      fi
-      _arguments -C \
-        '1:agent:(codex claude)' \
-        '2:worktree:_git_wt_worktree_names' \
-        '*::agent args:_files'
-      ;;
-    rm)
-      _arguments -C \
-        '--force[remove even when dirty]' \
-        '--branch[also delete the branch]' \
-        '1:worktree:_git_wt_worktree_names'
-      ;;
-    ls|list|prune|help)
-      ;;
-  esac
 }
 
-zstyle ':completion:*:*:git:*' user-commands wt:'worktree workflow helper'
+_git_wt_agents() {
+  emulate -L zsh
+
+  local -a agents
+  agents=(codex claude)
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${agents[*]}"
+  else
+    compadd -Q -S ' ' -- "${agents[@]}"
+  fi
+}
+
+_git_wt_new_options() {
+  emulate -L zsh
+
+  local -a options
+  options=(
+    --from
+    --branch
+    --path
+    --agent
+    --detach
+    --lock
+    --no-launch
+  )
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${options[*]}"
+  else
+    compadd -Q -S ' ' -- "${options[@]}"
+  fi
+}
+
+_git_wt_rm_options() {
+  emulate -L zsh
+
+  local -a options
+  options=(
+    --force
+    --branch
+  )
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${options[*]}"
+  else
+    compadd -Q -S ' ' -- "${options[@]}"
+  fi
+}
+
+_git_wt_prune_options() {
+  emulate -L zsh
+
+  local -a options
+  options=(
+    -n
+    --dry-run
+    -v
+    --verbose
+    --expire
+  )
+  if (( ${+functions[__gitcomp]} )); then
+    __gitcomp "${options[*]}"
+  else
+    compadd -Q -S ' ' -- "${options[@]}"
+  fi
+}
+
+_git-wt() {
+  _git_wt "$@"
+}
+
+_git_wt_register_user_command() {
+  emulate -L zsh
+
+  local -a user_commands
+  zstyle -a ':completion:*:*:git:*' user-commands user_commands
+  user_commands=(${user_commands:#wt:*})
+  user_commands+=('wt:worktree workflow helper')
+  zstyle ':completion:*:*:git:*' user-commands "${user_commands[@]}"
+}
+
+_git_wt_register_user_command
+unfunction _git_wt_register_user_command

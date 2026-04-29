@@ -224,13 +224,11 @@ branch_for_worktree() {
 }
 
 worktree_matches_target() {
-  local target worktree branch repo default_root root_relative=''
-  local short_path short_branch path_base
+  local target worktree branch default_root root_relative=''
   target="$1"
   worktree="$2"
   branch="$3"
-  repo="$4"
-  default_root="${5:-}"
+  default_root="${4:-}"
 
   [ "$target" = "$worktree" ] && return 0
   [ -n "$branch" ] && [ "$target" = "$branch" ] && return 0
@@ -243,35 +241,16 @@ worktree_matches_target() {
     esac
   fi
 
-  path_base="$(basename "$worktree")"
-  short_path="$path_base"
-  case "$path_base" in
-    "$repo")
-      short_path='main'
-      ;;
-    "$repo"-*)
-      short_path="${path_base#"$repo"-}"
-      ;;
-  esac
-
-  short_branch=''
-  if [ -n "$branch" ]; then
-    short_branch="$(basename "$branch")"
-  fi
-
-  [ "$target" = "$path_base" ] && return 0
-  [ "$target" = "$short_path" ] && return 0
   [ -n "$root_relative" ] && [ "$target" = "$root_relative" ] && return 0
-  [ -n "$short_branch" ] && [ "$target" = "$short_branch" ] && return 0
 
   return 1
 }
 
 find_worktree_path() {
-  local target normalized_target repo default_root matches=0 found='' worktree='' branch=''
+  local target normalized_target default_root main_path matches=0 found='' worktree='' branch=''
   target="${1:-}"
-  repo="$(repo_name)"
   default_root="$(default_worktree_root)"
+  main_path="$(main_worktree_path)"
 
   if [ -z "$target" ]; then
     current_worktree_path
@@ -287,7 +266,8 @@ find_worktree_path() {
 
   while IFS= read -r line || [ -n "$line" ]; do
     if [ -z "$line" ]; then
-      if [ -n "$worktree" ] && worktree_matches_target "$normalized_target" "$worktree" "$branch" "$repo" "$default_root"; then
+      if [ -n "$worktree" ] && [ "$worktree" != "$main_path" ] \
+        && worktree_matches_target "$normalized_target" "$worktree" "$branch" "$default_root"; then
         matches=$((matches + 1))
         found="$worktree"
       fi
