@@ -10,6 +10,8 @@
 
 !/install.sh
 !/link_mapper.json
+!/bin/
+!/bin/**
 
 !/.config/
 !/.config/starship/
@@ -24,4 +26,3 @@
 !/.config/nvim/
 !/.config/nvim/**
 /.config/nvim/lazy-lock.json
-

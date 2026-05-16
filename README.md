@@ -10,7 +10,7 @@ Quick castling w/ `install.sh`
 - Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
 - Runtime management w/ [mise (rtx-cli)](https://mise.jdx.dev/)
 - Dress up w/ [Starship](https://starship.rs/) + [UDEV Gothic](https://github.com/yuru7/udev-gothic)
-- Autosync
+- Configurable autosync
 - one-step installer, [`install.sh`](https://github.com/5ei74R0/dotfiles/blob/main/install.sh#L248-L285)
 - Test w/ [Github Actions](https://github.com/5ei74R0/dotfiles/actions)
 
@@ -22,6 +22,19 @@ This installer has following options:
 - `--extra | -e`: Install extra packages. (e.g. `ripgrep`, `fd`, `bat`, `eza`, `dust`, `mise` (`rtx-cli`), `npm`, `python`, `gitmoji-cli`...)
 
 ## Usage
+#### Manage dotfiles options
+Use `dotfiles option` to enable or disable local dotfiles behavior.
+
+```sh
+dotfiles option list
+dotfiles option show autosync
+dotfiles option off autosync
+dotfiles option on autosync
+dotfiles option toggle autosync
+```
+
+Option state is stored in `~/.config/dotfiles/options.zsh`, so changing options does not make this repository dirty.
+
 #### Add new config
 1. Add new config file to [`./config/`](./.config)
 2. Record src (under this directory) to dst (under $HOME directory) mapping in [`link_mapper.json`](./link_mapper.json)
@@ -53,4 +66,3 @@ If your default shell is not zsh, please install zsh first.
 We run github actions on Ubuntu20.04 & latest macOS (on github actions) to test whether or not `install.sh` works well.
 
 See [Actions](https://github.com/5ei74R0/dotfiles/actions) for more details.
-

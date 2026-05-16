@@ -39,6 +39,10 @@
         {
             "src": ".config/git/scripts",
             "dst": ".local/bin/git-script"
+        },
+        {
+            "src": "bin/dotfiles",
+            "dst": ".local/bin/dotfiles"
         }
     ]
 }
