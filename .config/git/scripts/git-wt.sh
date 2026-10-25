@@ -190,6 +190,36 @@ branch_exists() {
   git show-ref --verify --quiet "refs/heads/$1"
 }
 
+remote_branch_ref() {
+  local branch configured candidate selected='' configured_ref='' count=0
+  branch="$1"
+  configured="$(git config --get checkout.defaultRemote 2>/dev/null || true)"
+
+  while IFS= read -r candidate; do
+    case "$candidate" in
+      */"$branch")
+        count=$((count + 1))
+        selected="$candidate"
+        if [ -n "$configured" ] && [ "$candidate" = "$configured/$branch" ]; then
+          configured_ref="$candidate"
+        fi
+        ;;
+    esac
+  done < <(git for-each-ref --format='%(refname:short)' refs/remotes)
+
+  if [ -n "$configured_ref" ]; then
+    printf '%s\n' "$configured_ref"
+    return 0
+  fi
+
+  if [ "$count" -eq 1 ]; then
+    printf '%s\n' "$selected"
+    return 0
+  fi
+
+  return 1
+}
+
 is_main_worktree() {
   [ "$1" = "$(main_worktree_path)" ]
 }
@@ -340,7 +370,7 @@ Usage:
   git wt new <task> [options]
 
 Options:
-  --from <ref>      Base commit/branch/tag. Default: wt.defaultBase or HEAD.
+  --from <ref>      Base commit/branch/tag. Default: matching remote branch, then wt.defaultBase or HEAD.
   --branch <name>   Explicit branch name. Default: <task-path>.
   --path <path>     Explicit worktree path.
   --agent <name>    Launch an agent after creation: codex | claude.
@@ -355,7 +385,8 @@ EOF
 
 cmd_new() {
   local name='' from='' branch='' path='' agent=''
-  local slug path_slug root repo lock='false' detach='false' no_launch='false'
+  local slug path_slug root repo remote_ref=''
+  local lock='false' detach='false' no_launch='false' from_explicit='false'
   local default_root='false'
   local -a agent_args=()
 
@@ -364,6 +395,7 @@ cmd_new() {
       --from)
         [ $# -ge 2 ] || die '--from requires a value'
         from="$2"
+        from_explicit='true'
         shift 2
         ;;
       --branch)
@@ -468,6 +500,9 @@ cmd_new() {
 
     if branch_exists "$branch"; then
       git worktree add "$path" "$branch"
+    elif [ "$from_explicit" != 'true' ] \
+      && remote_ref="$(remote_branch_ref "$branch")"; then
+      git worktree add --track -b "$branch" "$path" "$remote_ref"
     else
       git worktree add -b "$branch" "$path" "$from"
     fi
